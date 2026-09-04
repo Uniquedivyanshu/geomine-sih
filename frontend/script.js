@@ -1,89 +1,65 @@
-let currentLoadedData = "";
-let strataChartInstance = null;
-const BACKEND_URL = "https://geomine-sih.onrender.com"; // Render Backend URL
+const BACKEND_URL = "https://geomine-sih.onrender.com"; // Your Render URL
 
-function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+let currentLoadedData = null;
 
-    if (tabName === 'summary') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('summaryTab').classList.add('active');
-    } else if (tabName === 'charts') {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('chartsTab').classList.add('active');
-        renderChart();
-    } else if (tabName === 'raw') {
-        document.querySelectorAll('.tab-btn')[2].classList.add('active');
-        document.getElementById('rawTab').classList.add('active');
-    }
-}
-
-document.getElementById('fileInput').addEventListener('change', (e) => {
-    const file = e.target.files[0];
+function handleFileUpload(event) {
+    const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            currentLoadedData = evt.target.result;
-            document.getElementById('rawDataDisplay').textContent = currentLoadedData;
-            alert(`File "${file.name}" loaded successfully! Click "Run AI Engine" to analyze.`);
-        };
-        reader.readAsText(file);
+        document.getElementById('fileNameDisplay').innerText = `Selected File: ${file.name}`;
     }
-});
-
-function loadSampleData(type) {
-    if (type === 'raniganj') {
-        currentLoadedData = `[CMPDI GEOLOGICAL REPORT - RANIGANJ BLOCK IV]\nBorehole ID: BH-RN-402\nDepth: 340m\nCoal Grade: Grade A Thermal\nEstimated Reserve: 4.2 MMT\nAsh Content: 12.4%\nRisk: High Seam Methane at 280m.`;
-    } else if (type === 'jharia') {
-        currentLoadedData = `[CMPDI GEOLOGICAL REPORT - JHARIA PIT-3]\nBorehole ID: BH-JH-109\nDepth: 510m\nCoal Grade: Prime Coking\nEstimated Reserve: 8.7 MMT\nAsh Content: 18.2%\nRisk: Underground Pit Fire within 500m radius.`;
-    }
-    document.getElementById('rawDataDisplay').textContent = currentLoadedData;
-    document.getElementById('aiOutput').innerHTML = `<p style="color: #00f0ff;">Loaded sample dataset for <strong>${type.toUpperCase()}</strong>. Click "Run AI Engine".</p>`;
 }
 
 async function processDocument() {
     const outputBox = document.getElementById('aiOutput');
     const apiKey = document.getElementById('apiKey').value;
+    const fileInput = document.getElementById('fileInput');
 
-    if (!currentLoadedData) {
-        alert("Please load a file or sample dataset first!");
+    if (!fileInput.files[0] && !currentLoadedData) {
+        alert("Please select or upload a PDF file first!");
         return;
     }
 
-    outputBox.innerHTML = "<p>⚡ <em>AI Engine analyzing geological parameters...</em></p>";
+    outputBox.innerHTML = "<p>⚡ <em>Sending document to Python Gemini Engine...</em></p>";
 
-    setTimeout(() => {
+    if (fileInput.files[0]) {
+        // Real PDF File Upload to Render Backend
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        if (apiKey) formData.append("api_key", apiKey);
+
+        try {
+            const response = await fetch(`${BACKEND_URL}/analyze-pdf`, {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                outputBox.innerHTML = `<p style="color: #ff4d4d;">❌ Error: ${data.error}</p>`;
+            } else {
+                outputBox.innerHTML = `
+                    <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">AI Extraction Results (${data.filename})</h4>
+                    <div style="white-space: pre-line; color: #cbd5e1;">${data.summary}</div>
+                `;
+            }
+        } catch (err) {
+            outputBox.innerHTML = "<p style='color:#ff4d4d;'>Failed to connect to Python Backend Server!</p>";
+            console.error(err);
+        }
+    } else {
+        // Sample Data Clicked
         outputBox.innerHTML = `
-            <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">AI Executive Summary (CMPDI Engine)</h4>
-            <ul style="padding-left: 1.2rem; color: #cbd5e1;">
-                <li><strong>Mineral Classification:</strong> High Quality Commercial Coal Seam Detected.</li>
-                <li><strong>Estimated Reserve Yield:</strong> ~4.5 - 8.5 Million Metric Tonnes.</li>
-                <li><strong>Hazard Mitigation Alert:</strong> Gas Concentration & Methane Venting Protocols Required.</li>
-                <li><strong>Regulatory Status:</strong> Passes Ministry of Coal Structural Standards.</li>
-            </ul>
+            <h4 style="color: var(--accent-blue);">Sample Dataset Summary</h4>
+            <div style="white-space: pre-line; color: #cbd5e1;">${currentLoadedData}</div>
         `;
-    }, 1000);
+    }
 }
 
-function renderChart() {
-    const ctx = document.getElementById('strataChart').getContext('2d');
-    if (strataChartInstance) strataChartInstance.destroy();
-
-    strataChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Overburden', 'Sandstone Layer', 'Coal Seam A', 'Shale Layer', 'Coal Seam B'],
-            datasets: [{
-                label: 'Layer Depth / Thickness (Meters)',
-                data: [45, 120, 35, 80, 60],
-                backgroundColor: ['#334155', '#94a3b8', '#ff6b00', '#475569', '#00f0ff']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { title: { display: true, text: 'Geological Strata Profile Breakdown', color: '#fff' } },
-            scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
-        }
-    });
+function loadSample(sampleName) {
+    const sampleData = {
+        'Raniganj Coalfield Block-4': 'Geological Report: Raniganj Coalfield Block-4.\n- Estimated Reserves: 42.5 Million Tonnes\n- Coal Grade: Power Grade (G10/G11)\n- Seam Thickness: 3.2m average\n- Strata: Sandstone, Shale, High Moisture content.',
+        'Jharia Seam Deep Pit-2': 'Geological Report: Jharia Seam Deep Pit-2.\n- Estimated Reserves: 88.1 Million Tonnes\n- Coal Grade: Coking Coal (W-II)\n- Methane Gas Index: High Risk Zone\n- Depth: 450m below surface level.'
+    };
+    currentLoadedData = sampleData[sampleName] || 'Sample data loaded.';
+    document.getElementById('fileNameDisplay').innerText = `Loaded Sample: ${sampleName}`;
 }
