@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoMine AI | Ministry of Coal Intelligence Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo-section">
+            <i data-lucide="pick"></i>
+            <div>
+                <h1>GeoMine AI Platform</h1>
+                <p>CMPDI Geological & Mining Solution | Ministry of Coal</p>
+            </div>
+        </div>
+        <div class="status-badge">
+            <span class="pulse-dot"></span> System Live & Operational
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <section class="card upload-card">
+            <h2><i data-lucide="file-up"></i> Upload Mining Document</h2>
+            <p class="subtitle">Upload CMPDI Borehole Reports, Pit Data, or PDF Surveys</p>
+
+            <div class="drop-zone" id="dropZone">
+                <i data-lucide="upload-cloud" class="upload-icon"></i>
+                <p>Drag & Drop report here or <label for="fileInput"><span>Browse File</span></label></p>
+                <input type="file" id="fileInput" accept=".pdf,.txt" hidden>
+            </div>
+
+            <div class="preset-section">
+                <p class="preset-title">Or click to load sample datasets:</p>
+                <button class="btn btn-secondary" onclick="loadSampleData('raniganj')">Raniganj Coalfield Block-4</button>
+                <button class="btn btn-secondary" onclick="loadSampleData('jharia')">Jharia Seam Deep Pit-3</button>
+            </div>
+
+            <div class="api-key-box">
+                <label for="apiKey">Gemini API Key (Optional):</label>
+                <input type="password" id="apiKey" placeholder="Enter key for live LLM extraction">
+            </div>
+        </section>
+
+        <section class="card analytics-card">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('summary')"><i data-lucide="sparkles"></i> AI Analysis</button>
+                <button class="tab-btn" onclick="switchTab('charts')"><i data-lucide="bar-chart-3"></i> Mineral Metrics</button>
+                <button class="tab-btn" onclick="switchTab('raw')"><i data-lucide="file-text"></i> Raw Data</button>
+            </div>
+
+            <div id="summaryTab" class="tab-content active">
+                <div class="summary-header">
+                    <h3>Executive Geological Summary</h3>
+                    <button class="btn btn-primary" onclick="processDocument()"><i data-lucide="cpu"></i> Run AI Engine</button>
+                </div>
+                <div id="aiOutput" class="output-box">
+                    <p class="placeholder-text">Upload a document or select a sample dataset to view AI insights.</p>
+                </div>
+            </div>
+
+            <div id="chartsTab" class="tab-content">
+                <div class="chart-container">
+                    <canvas id="strataChart"></canvas>
+                </div>
+            </div>
+
+            <div id="rawTab" class="tab-content">
+                <pre id="rawDataDisplay" class="code-block">Waiting for data input...</pre>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Smart India Hackathon 2026 | Developed by Team NexGen for PS 26023</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
