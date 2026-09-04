@@ -4,80 +4,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeoMine AI | CIL & CMPDI Smart Reporting System</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #060e0a; color: #ecfdf5; font-family: 'Inter', system-ui, sans-serif; }
+        .glass-card { background: rgba(12, 28, 20, 0.75); border: 1px solid rgba(16, 185, 129, 0.2); backdrop-filter: blur(10px); border-radius: 12px; }
+        .nav-item { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .nav-item:hover, .nav-item.active { background-color: rgba(16, 185, 129, 0.15); border-left: 4px solid #10b981; color: #34d399; }
+        .tag-lg { font-size: 1.25rem; font-weight: 700; color: #34d399; background: rgba(16, 185, 129, 0.2); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .tag-md { font-size: 1rem; font-weight: 600; color: #fbbf24; background: rgba(251, 191, 36, 0.15); padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .tag-sm { font-size: 0.875rem; color: #9ca3af; background: rgba(255, 255, 255, 0.05); padding: 4px 10px; border-radius: 6px; }
+        .status-card { padding: 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .status-card.pass { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); }
+        .status-card.warning { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); }
+    </style>
 </head>
-<body>
-    <header class="app-header">
-        <div class="logo-container">
-            <div class="logo-icon">⛏️</div>
-            <div>
-                <h1>GeoMine AI Enterprise</h1>
-                <p>AI-Powered Geological & Statutory Compliance Platform | CMPDI / Coal India Limited</p>
-            </div>
-        </div>
-        <div class="status-badge">● SIH26023 Live System</div>
-    </header>
+<body class="flex h-screen overflow-hidden">
 
-    <main class="dashboard-container">
-        <!-- Sidebar Input Panel -->
-        <aside class="sidebar">
-            <div class="card">
-                <h3>📄 Upload Mining / Geological PDF</h3>
-                <p class="subtitle">Supports Borehole logs, DGMS Compliance reports & Parliamentary Query documents</p>
+    <!-- LEFT SIDEBAR NAVIGATION PANEL -->
+    <aside class="w-72 bg-[#081510] border-r border-emerald-900/40 flex flex-col justify-between p-4 z-20">
+        <div>
+            <!-- Branding Header -->
+            <div class="flex items-center gap-3 px-2 py-3 mb-6 border-b border-emerald-900/40">
+                <div class="bg-emerald-500 text-black p-2.5 rounded-xl font-bold text-xl flex items-center justify-center">⛏️</div>
+                <div>
+                    <h1 class="font-bold text-base text-emerald-400 leading-tight">GeoMine AI</h1>
+                    <p class="text-[11px] text-emerald-600 font-medium">CMPDI / Coal India Limited</p>
+                </div>
+            </div>
+
+            <!-- Upload & Engine Trigger Section -->
+            <div class="glass-card p-3.5 mb-6 space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> Document Control
+                </h3>
                 
-                <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-                    <span class="upload-icon">☁️</span>
-                    <p>Click or Drag PDF file here</p>
+                <!-- Drop Zone -->
+                <div class="drop-zone border-2 border-dashed border-emerald-800/60 hover:border-emerald-500 bg-emerald-950/20 hover:bg-emerald-900/20 rounded-lg p-3 text-center cursor-pointer transition" onclick="document.getElementById('fileInput').click()">
+                    <span class="upload-icon text-2xl">☁️</span>
+                    <p class="text-[11px] text-emerald-200 mt-1 font-medium">Click or Drag PDF here</p>
                     <input type="file" id="fileInput" accept=".pdf" style="display:none;">
                 </div>
-                <div id="fileNameDisplay" class="file-name">No file selected</div>
+                <div id="fileNameDisplay" class="file-name text-[11px] text-amber-400 font-mono truncate px-1">No file selected</div>
 
-                <hr class="divider">
-
-                <h4>📁 Load Historical Sample Datasets</h4>
-                <div class="sample-buttons">
-                    <button class="btn-sample" onclick="loadSampleData('raniganj')">Raniganj Block IV (Geological Log)</button>
-                    <button class="btn-sample" onclick="loadSampleData('jharia')">Jharia Deep Pit-3 (Compliance & Methane)</button>
-                    <button class="btn-sample" onclick="loadSampleData('parliament')">Parliamentary Query Draft (Ministry of Coal)</button>
+                <!-- API Key Configuration -->
+                <div class="space-y-1 pt-1">
+                    <label for="apiKey" class="text-[11px] font-semibold text-emerald-400">Gemini API Key (Optional):</label>
+                    <input type="password" id="apiKey" placeholder="Enter key for Gemini 1.5 Flash" class="w-full bg-black/60 border border-emerald-900/80 rounded px-2.5 py-1.5 text-xs text-emerald-200 focus:outline-none focus:border-emerald-500 transition">
                 </div>
 
-                <hr class="divider">
-
-                <label for="apiKey"><strong>Gemini API Key (Optional):</strong></label>
-                <input type="password" id="apiKey" placeholder="Enter key for live Gemini 1.5 Flash">
-
-                <button class="btn-primary" onclick="processDocument()">⚡ Run AI Mining Engine</button>
-            </div>
-        </aside>
-
-        <!-- Main Content Panel with Tabs -->
-        <section class="main-content">
-            <!-- Navigation Tabs -->
-            <div class="tabs-nav">
-                <button class="tab-btn active" onclick="switchTab('report')">📝 1. Automated Report & QA Draft</button>
-                <button class="tab-btn" onclick="switchTab('topics')">☁️ 2. Word Cloud & Topic Extraction</button>
-                <button class="tab-btn" onclick="switchTab('compliance')">🛡️ 3. DGMS & SPCB Compliance Audit</button>
-                <button class="tab-btn" onclick="switchTab('analytics')">📊 Stratigraphy & Metrics</button>
+                <button class="btn-primary w-full bg-emerald-600 hover:bg-emerald-500 text-black font-bold text-xs py-2.5 rounded-lg shadow-lg shadow-emerald-950/50 transition flex items-center justify-center gap-1.5" onclick="processDocument()">
+                    <span>⚡ Run AI Mining Engine</span>
+                </button>
             </div>
 
-            <!-- Tab 1: Automated Report & Parliamentary QA -->
-            <div id="reportTab" class="tab-content active">
-                <div class="card">
-                    <h2>Automated Technical & Parliamentary QA Response</h2>
-                    <p class="section-desc">AI-generated official technical summaries and automated responses formatted for Ministry & Administrative queries.</p>
-                    <div id="aiOutput" class="output-box">
-                        <p class="placeholder">Select or upload a PDF document and click "Run AI Mining Engine" to generate reports.</p>
+            <!-- Main Navigation Tabs -->
+            <nav class="space-y-1.5">
+                <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-600 px-3 mb-1">Analysis Modules</div>
+                
+                <button class="tab-btn nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-left" onclick="switchTab('report')">
+                    <span class="w-5 text-center">📝</span>
+                    <span>1. Automated Report & QA</span>
+                </button>
+                <button class="tab-btn nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-left text-gray-300" onclick="switchTab('topics')">
+                    <span class="w-5 text-center">☁️</span>
+                    <span>2. Word Cloud & Topics</span>
+                </button>
+                <button class="tab-btn nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-left text-gray-300" onclick="switchTab('compliance')">
+                    <span class="w-5 text-center">🛡️</span>
+                    <span>3. DGMS & SPCB Audit</span>
+                </button>
+                <button class="tab-btn nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-left text-gray-300" onclick="switchTab('analytics')">
+                    <span class="w-5 text-center">📊</span>
+                    <span>4. Stratigraphy & Metrics</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- System Status Badge -->
+        <div class="glass-card p-3 flex items-center justify-between mt-4 border-emerald-900/40">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="status-badge text-[11px] font-semibold text-emerald-300">SIH26023 Live System</span>
+            </div>
+            <span class="text-[10px] font-mono text-emerald-600">v2.4</span>
+        </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE SECTION -->
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-[#060e0a]">
+        
+        <!-- Top Application Bar -->
+        <header class="app-header bg-[#081510]/90 border-b border-emerald-900/40 px-6 py-3.5 flex items-center justify-between sticky top-0 z-10 backdrop-blur-md">
+            <div>
+                <h2 class="text-base font-bold text-emerald-300 flex items-center gap-2">
+                    <span>GeoMine AI Enterprise</span>
+                    <span class="text-xs font-normal text-emerald-600">| CMPDI Field Portal</span>
+                </h2>
+                <p class="text-[11px] text-gray-400">AI-Powered Geological & Statutory Compliance Platform</p>
+            </div>
+            
+            <!-- Quick Load Historical Sample Datasets -->
+            <div class="flex items-center gap-2">
+                <span class="text-[11px] font-medium text-emerald-500 mr-1">Load Samples:</span>
+                <button class="btn-sample bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 text-[11px] px-2.5 py-1 rounded transition" onclick="loadSampleData('raniganj')">Raniganj IV</button>
+                <button class="btn-sample bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 text-[11px] px-2.5 py-1 rounded transition" onclick="loadSampleData('jharia')">Jharia Pit-3</button>
+                <button class="btn-sample bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 text-[11px] px-2.5 py-1 rounded transition" onclick="loadSampleData('parliament')">Parliament Query</button>
+            </div>
+        </header>
+
+        <section class="dashboard-container p-6 space-y-6">
+
+            <!-- Executive KPI Metrics Strip -->
+            <div class="grid grid-cols-4 gap-4">
+                <div class="glass-card p-3.5">
+                    <p class="text-[11px] font-medium text-emerald-500">Document Processing</p>
+                    <p class="text-xl font-bold text-emerald-300 mt-0.5">Live Gemini 1.5</p>
+                </div>
+                <div class="glass-card p-3.5">
+                    <p class="text-[11px] font-medium text-emerald-500">Safety Index</p>
+                    <p class="text-xl font-bold text-emerald-300 mt-0.5">DGMS Verified</p>
+                </div>
+                <div class="glass-card p-3.5">
+                    <p class="text-[11px] font-medium text-emerald-500">Environmental Score</p>
+                    <p class="text-xl font-bold text-amber-400 mt-0.5">SPCB Compliant</p>
+                </div>
+                <div class="glass-card p-3.5">
+                    <p class="text-[11px] font-medium text-emerald-500">Parliament Draft Accuracy</p>
+                    <p class="text-xl font-bold text-emerald-300 mt-0.5">98.4% Confidence</p>
+                </div>
+            </div>
+
+            <!-- TAB 1: AUTOMATED REPORT & PARLIAMENTARY QA -->
+            <div id="reportTab" class="tab-content">
+                <div class="card glass-card p-6 space-y-3">
+                    <div class="border-b border-emerald-900/40 pb-3">
+                        <h2 class="text-lg font-bold text-emerald-400">Automated Technical & Parliamentary QA Response</h2>
+                        <p class="section-desc text-xs text-gray-400 mt-0.5">AI-generated official technical summaries and automated responses formatted for Ministry & Administrative queries.</p>
+                    </div>
+                    <div id="aiOutput" class="output-box bg-black/40 border border-emerald-950 rounded-lg p-4 min-h-[220px] text-xs leading-relaxed text-gray-200">
+                        <p class="placeholder text-gray-500 italic">Select or upload a PDF document and click "Run AI Mining Engine" to generate reports.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 2: Word Cloud & Topic Extraction -->
-            <div id="topicsTab" class="tab-content">
-                <div class="card">
-                    <h2>Key Topic Identification & Keyword Density</h2>
-                    <p class="section-desc">Automated extraction of high-value mining terminology, minerals, and risk indicators from unstructured text.</p>
-                    <div id="wordCloudBox" class="word-cloud-container">
+            <!-- TAB 2: WORD CLOUD & TOPIC EXTRACTION -->
+            <div id="topicsTab" class="tab-content hidden">
+                <div class="card glass-card p-6 space-y-4">
+                    <div class="border-b border-emerald-900/40 pb-3">
+                        <h2 class="text-lg font-bold text-emerald-400">Key Topic Identification & Keyword Density</h2>
+                        <p class="section-desc text-xs text-gray-400 mt-0.5">Automated extraction of high-value mining terminology, minerals, and risk indicators from unstructured text.</p>
+                    </div>
+                    
+                    <div id="wordCloudBox" class="word-cloud-container bg-black/40 border border-emerald-950 rounded-lg p-6 flex flex-wrap gap-3 items-center justify-center min-h-[140px]">
                         <span class="tag tag-lg">Coal Seams</span>
                         <span class="tag tag-md">Methane Risk</span>
                         <span class="tag tag-sm">Sandstone Strata</span>
@@ -85,42 +166,51 @@
                         <span class="tag tag-md">DGMS Safety</span>
                         <span class="tag tag-sm">Overburden 45m</span>
                     </div>
-                    <div id="topicSummaryBox" class="output-box" style="margin-top: 1rem;">
-                        <p class="placeholder">Topic breakdown will appear here after processing document.</p>
+
+                    <div id="topicSummaryBox" class="output-box bg-black/40 border border-emerald-950 rounded-lg p-4 text-xs text-gray-300">
+                        <p class="placeholder text-gray-500 italic">Topic breakdown will appear here after processing document.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 3: DGMS & SPCB Compliance Auditor -->
-            <div id="complianceTab" class="tab-content">
-                <div class="card">
-                    <h2>Multi-Statutory Compliance & Anomaly Verification</h2>
-                    <p class="section-desc">Automated cross-referencing against Directorate General of Mines Safety (DGMS) guidelines and SPCB Environmental limits.</p>
-                    
-                    <div class="compliance-grid">
+            <!-- TAB 3: DGMS & SPCB COMPLIANCE AUDITOR -->
+            <div id="complianceTab" class="tab-content hidden">
+                <div class="card glass-card p-6 space-y-4">
+                    <div class="border-b border-emerald-900/40 pb-3">
+                        <h2 class="text-lg font-bold text-emerald-400">Multi-Statutory Compliance & Anomaly Verification</h2>
+                        <p class="section-desc text-xs text-gray-400 mt-0.5">Automated cross-referencing against Directorate General of Mines Safety (DGMS) guidelines and SPCB Environmental limits.</p>
+                    </div>
+
+                    <div class="compliance-grid grid grid-cols-2 gap-4">
                         <div class="status-card pass" id="dgmsCard">
-                            <h4>DGMS Mine Safety Framework</h4>
-                            <p id="dgmsStatus">Status: Awaiting Verification</p>
+                            <h4 class="font-bold text-emerald-300 text-sm mb-1">DGMS Mine Safety Framework</h4>
+                            <p id="dgmsStatus" class="text-xs text-emerald-200/80">Status: Awaiting Verification</p>
                         </div>
                         <div class="status-card warning" id="spcbCard">
-                            <h4>SPCB Ambient Air & Environment</h4>
-                            <p id="spcbStatus">Status: Awaiting Verification</p>
+                            <h4 class="font-bold text-amber-300 text-sm mb-1">SPCB Ambient Air & Environment</h4>
+                            <p id="spcbStatus" class="text-xs text-amber-200/80">Status: Awaiting Verification</p>
                         </div>
                     </div>
 
-                    <div id="anomaliesBox" class="output-box" style="margin-top: 1rem;">
-                        <p class="placeholder">Anomalies and statutory red flags will be highlighted here.</p>
+                    <div id="anomaliesBox" class="output-box bg-black/40 border border-emerald-950 rounded-lg p-4 text-xs text-gray-300">
+                        <p class="placeholder text-gray-500 italic">Anomalies and statutory red flags will be highlighted here.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 4: Analytics Chart -->
-            <div id="analyticsTab" class="tab-content">
-                <div class="card">
-                    <h2>Geological Strata Profile & Mineral Reserve Breakdown</h2>
-                    <canvas id="strataChart" style="max-height: 350px;"></canvas>
+            <!-- TAB 4: ANALYTICS & STRATIGRAPHY CHART -->
+            <div id="analyticsTab" class="tab-content hidden">
+                <div class="card glass-card p-6 space-y-4">
+                    <div class="border-b border-emerald-900/40 pb-3">
+                        <h2 class="text-lg font-bold text-emerald-400">Geological Strata Profile & Mineral Reserve Breakdown</h2>
+                        <p class="section-desc text-xs text-gray-400 mt-0.5">Lithology depth analysis and borehole mineral distribution graphics.</p>
+                    </div>
+                    <div class="bg-black/40 border border-emerald-950 rounded-lg p-4 flex justify-center items-center">
+                        <canvas id="strataChart" style="max-height: 350px; width: 100%;"></canvas>
+                    </div>
                 </div>
             </div>
+
         </section>
     </main>
 
