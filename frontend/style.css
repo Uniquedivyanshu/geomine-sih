@@ -1,171 +1,110 @@
+/* Dark Emerald Mining Theme for GeoMine AI */
 :root {
-    --bg-dark: #0f172a;
-    --card-bg: #1e293b;
-    --accent-blue: #00f0ff;
-    --accent-orange: #ff6b00;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
+    --bg-main: #07130e;
+    --card-bg: #0e2219;
+    --border-color: #1a4231;
+    --accent-emerald: #10b981;
+    --accent-glow: rgba(16, 185, 129, 0.2);
+    --text-primary: #e6f4ed;
+    --text-secondary: #93c5fd;
+    --text-muted: #6b8a7a;
 }
 
 body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-main);
+    padding: 0;
 }
 
+/* Header Styling */
 .app-header {
+    background-color: #0a1b14 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    background-color: #0b1120;
-    border-bottom: 1px solid var(--border-color);
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.logo-icon {
-    font-size: 2rem;
-    background: #1e293b;
-    padding: 0.5rem;
-    border-radius: 8px;
-}
-
-.app-header h1 {
+.logo-container h1 {
+    color: var(--accent-emerald) !important;
     margin: 0;
     font-size: 1.4rem;
-    color: var(--accent-blue);
 }
 
-.app-header p {
+.logo-container p {
+    color: var(--text-muted) !important;
     margin: 0;
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: 0.8rem;
 }
 
 .status-badge {
-    background-color: rgba(0, 240, 255, 0.1);
-    color: var(--accent-blue);
-    padding: 0.4rem 0.8rem;
+    background-color: #062a1b !important;
+    color: var(--accent-emerald) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 0.35rem 0.8rem;
     border-radius: 20px;
-    border: 1px solid var(--accent-blue);
+    font-size: 0.75rem;
     font-weight: 600;
-    font-size: 0.85rem;
 }
 
-.dashboard-container {
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-}
-
-.card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+/* Cards & Container */
+.card, .dashboard-container aside, .dashboard-container main {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 12px;
-    padding: 1.2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-.subtitle {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: -0.5rem;
-    margin-bottom: 1rem;
-}
-
-.drop-zone {
-    border: 2px dashed var(--accent-blue);
-    border-radius: 8px;
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    background: rgba(0, 240, 255, 0.03);
-    transition: 0.2s;
-}
-
-.drop-zone:hover {
-    background: rgba(0, 240, 255, 0.08);
-}
-
-.upload-icon {
-    font-size: 2rem;
-}
-
-.file-name {
-    font-size: 0.85rem;
-    color: var(--accent-blue);
-    margin-top: 0.5rem;
-    word-break: break-all;
-}
-
-.divider {
-    border: 0;
-    border-top: 1px solid var(--border-color);
-    margin: 1.2rem 0;
-}
-
-.sample-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.btn-sample {
-    background: #0f172a;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    padding: 0.6rem;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
-    font-size: 0.85rem;
-    transition: 0.2s;
-}
-
-.btn-sample:hover {
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
-}
-
-input[type="password"] {
-    width: 100%;
-    padding: 0.6rem;
-    margin-top: 0.4rem;
-    margin-bottom: 1rem;
-    background: #0f172a;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: white;
-    box-sizing: border-box;
-}
-
+/* Buttons & Inputs */
 .btn-primary {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent-orange), #d97706);
-    color: white;
-    border: none;
-    padding: 0.8rem;
+    background-color: var(--accent-emerald) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    border: none !important;
     border-radius: 8px;
-    font-weight: bold;
+    padding: 0.75rem 1rem;
     cursor: pointer;
-    font-size: 1rem;
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    background-color: #34d399 !important;
+    box-shadow: 0 0 12px var(--accent-glow);
 }
 
-/* Tabs Styling */
+.btn-sample {
+    background-color: #0a1a13 !important;
+    color: #a7f3d0 !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 0.4rem;
+    width: 100%;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.btn-sample:hover {
+    border-color: var(--accent-emerald) !important;
+    background-color: #122e22 !important;
+}
+
+.drop-zone {
+    border: 2px dashed var(--border-color) !important;
+    background-color: #0a1b14 !important;
+    border-radius: 8px;
+    padding: 1.2rem;
+    text-align: center;
+}
+
+.drop-zone:hover {
+    border-color: var(--accent-emerald) !important;
+}
+
+/* Tabs Navigation */
 .tabs-nav {
     display: flex;
     gap: 0.5rem;
@@ -173,82 +112,43 @@ input[type="password"] {
 }
 
 .tab-btn {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-    padding: 0.7rem 1rem;
+    background-color: #0a1a13 !important;
+    color: var(--text-muted) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 0.6rem 1rem;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-.tab-btn.active {
-    background: var(--accent-blue);
-    color: #000;
-    border-color: var(--accent-blue);
+.tab-btn.active, .tab-btn:hover {
+    background-color: var(--accent-emerald) !important;
+    color: #000 !important;
+    border-color: var(--accent-emerald) !important;
+    font-weight: 700;
 }
 
-.tab-content {
-    display: none;
+/* Input Box */
+input[type="password"], input[type="text"] {
+    background-color: #06110c !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    padding: 0.5rem;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.tab-content.active {
-    display: block;
+input[type="password"]:focus {
+    border-color: var(--accent-emerald) !important;
+    outline: none;
 }
 
+/* Output Box */
 .output-box {
-    background-color: #0f172a;
-    border: 1px solid var(--border-color);
+    background-color: #050d09 !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 8px;
     padding: 1rem;
-    min-height: 200px;
-    font-size: 0.95rem;
-    line-height: 1.6;
 }
-
-.placeholder {
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-/* Word Cloud */
-.word-cloud-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-    padding: 1rem;
-    background: #0f172a;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.tag {
-    background: rgba(0, 240, 255, 0.1);
-    color: var(--accent-blue);
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 240, 255, 0.3);
-}
-
-.tag-lg { font-size: 1.2rem; font-weight: bold; color: var(--accent-orange); border-color: var(--accent-orange); }
-.tag-md { font-size: 1rem; }
-.tag-sm { font-size: 0.85rem; color: var(--text-muted); }
-
-/* Compliance Cards */
-.compliance-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.status-card {
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: #0f172a;
-}
-
-.status-card h4 { margin: 0 0 0.5rem 0; }
-.status-card.pass { border-left: 5px solid #22c55e; }
-.status-card.warning { border-left: 5px solid #f59e0b; }
