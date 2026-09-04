@@ -3,82 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoMine AI | Ministry of Coal Intelligence Portal</title>
+    <title>GeoMine AI | CIL & CMPDI Smart Reporting System</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo-section">
-            <i data-lucide="pick"></i>
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="logo-icon">⛏️</div>
             <div>
-                <h1>GeoMine AI Platform</h1>
-                <p>CMPDI Geological & Mining Solution | Ministry of Coal</p>
+                <h1>GeoMine AI Enterprise</h1>
+                <p>AI-Powered Geological & Statutory Compliance Platform | CMPDI / Coal India Limited</p>
             </div>
         </div>
-        <div class="status-badge">
-            <span class="pulse-dot"></span> System Live & Operational
-        </div>
+        <div class="status-badge">● SIH26023 Live System</div>
     </header>
 
-    <main class="dashboard-grid">
-        <section class="card upload-card">
-            <h2><i data-lucide="file-up"></i> Upload Mining Document</h2>
-            <p class="subtitle">Upload CMPDI Borehole Reports, Pit Data, or PDF Surveys</p>
-
-            <div class="drop-zone" id="dropZone">
-                <i data-lucide="upload-cloud" class="upload-icon"></i>
-                <p>Drag & Drop report here or <label for="fileInput"><span>Browse File</span></label></p>
-                <input type="file" id="fileInput" accept=".pdf,.txt" hidden>
-            </div>
-
-            <div class="preset-section">
-                <p class="preset-title">Or click to load sample datasets:</p>
-                <button class="btn btn-secondary" onclick="loadSampleData('raniganj')">Raniganj Coalfield Block-4</button>
-                <button class="btn btn-secondary" onclick="loadSampleData('jharia')">Jharia Seam Deep Pit-3</button>
-            </div>
-
-            <div class="api-key-box">
-                <label for="apiKey">Gemini API Key (Optional):</label>
-                <input type="password" id="apiKey" placeholder="Enter key for live LLM extraction">
-            </div>
-        </section>
-
-        <section class="card analytics-card">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('summary')"><i data-lucide="sparkles"></i> AI Analysis</button>
-                <button class="tab-btn" onclick="switchTab('charts')"><i data-lucide="bar-chart-3"></i> Mineral Metrics</button>
-                <button class="tab-btn" onclick="switchTab('raw')"><i data-lucide="file-text"></i> Raw Data</button>
-            </div>
-
-            <div id="summaryTab" class="tab-content active">
-                <div class="summary-header">
-                    <h3>Executive Geological Summary</h3>
-                    <button class="btn btn-primary" onclick="processDocument()"><i data-lucide="cpu"></i> Run AI Engine</button>
+    <main class="dashboard-container">
+        <!-- Sidebar Input Panel -->
+        <aside class="sidebar">
+            <div class="card">
+                <h3>📄 Upload Mining / Geological PDF</h3>
+                <p class="subtitle">Supports Borehole logs, DGMS Compliance reports & Parliamentary Query documents</p>
+                
+                <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                    <span class="upload-icon">☁️</span>
+                    <p>Click or Drag PDF file here</p>
+                    <input type="file" id="fileInput" accept=".pdf" style="display:none;">
                 </div>
-                <div id="aiOutput" class="output-box">
-                    <p class="placeholder-text">Upload a document or select a sample dataset to view AI insights.</p>
+                <div id="fileNameDisplay" class="file-name">No file selected</div>
+
+                <hr class="divider">
+
+                <h4>📁 Load Historical Sample Datasets</h4>
+                <div class="sample-buttons">
+                    <button class="btn-sample" onclick="loadSampleData('raniganj')">Raniganj Block IV (Geological Log)</button>
+                    <button class="btn-sample" onclick="loadSampleData('jharia')">Jharia Deep Pit-3 (Compliance & Methane)</button>
+                    <button class="btn-sample" onclick="loadSampleData('parliament')">Parliamentary Query Draft (Ministry of Coal)</button>
+                </div>
+
+                <hr class="divider">
+
+                <label for="apiKey"><strong>Gemini API Key (Optional):</strong></label>
+                <input type="password" id="apiKey" placeholder="Enter key for live Gemini 1.5 Flash">
+
+                <button class="btn-primary" onclick="processDocument()">⚡ Run AI Mining Engine</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Panel with Tabs -->
+        <section class="main-content">
+            <!-- Navigation Tabs -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="switchTab('report')">📝 1. Automated Report & QA Draft</button>
+                <button class="tab-btn" onclick="switchTab('topics')">☁️ 2. Word Cloud & Topic Extraction</button>
+                <button class="tab-btn" onclick="switchTab('compliance')">🛡️ 3. DGMS & SPCB Compliance Audit</button>
+                <button class="tab-btn" onclick="switchTab('analytics')">📊 Stratigraphy & Metrics</button>
+            </div>
+
+            <!-- Tab 1: Automated Report & Parliamentary QA -->
+            <div id="reportTab" class="tab-content active">
+                <div class="card">
+                    <h2>Automated Technical & Parliamentary QA Response</h2>
+                    <p class="section-desc">AI-generated official technical summaries and automated responses formatted for Ministry & Administrative queries.</p>
+                    <div id="aiOutput" class="output-box">
+                        <p class="placeholder">Select or upload a PDF document and click "Run AI Mining Engine" to generate reports.</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="chartsTab" class="tab-content">
-                <div class="chart-container">
-                    <canvas id="strataChart"></canvas>
+            <!-- Tab 2: Word Cloud & Topic Extraction -->
+            <div id="topicsTab" class="tab-content">
+                <div class="card">
+                    <h2>Key Topic Identification & Keyword Density</h2>
+                    <p class="section-desc">Automated extraction of high-value mining terminology, minerals, and risk indicators from unstructured text.</p>
+                    <div id="wordCloudBox" class="word-cloud-container">
+                        <span class="tag tag-lg">Coal Seams</span>
+                        <span class="tag tag-md">Methane Risk</span>
+                        <span class="tag tag-sm">Sandstone Strata</span>
+                        <span class="tag tag-lg">Ash Content 14%</span>
+                        <span class="tag tag-md">DGMS Safety</span>
+                        <span class="tag tag-sm">Overburden 45m</span>
+                    </div>
+                    <div id="topicSummaryBox" class="output-box" style="margin-top: 1rem;">
+                        <p class="placeholder">Topic breakdown will appear here after processing document.</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="rawTab" class="tab-content">
-                <pre id="rawDataDisplay" class="code-block">Waiting for data input...</pre>
+            <!-- Tab 3: DGMS & SPCB Compliance Auditor -->
+            <div id="complianceTab" class="tab-content">
+                <div class="card">
+                    <h2>Multi-Statutory Compliance & Anomaly Verification</h2>
+                    <p class="section-desc">Automated cross-referencing against Directorate General of Mines Safety (DGMS) guidelines and SPCB Environmental limits.</p>
+                    
+                    <div class="compliance-grid">
+                        <div class="status-card pass" id="dgmsCard">
+                            <h4>DGMS Mine Safety Framework</h4>
+                            <p id="dgmsStatus">Status: Awaiting Verification</p>
+                        </div>
+                        <div class="status-card warning" id="spcbCard">
+                            <h4>SPCB Ambient Air & Environment</h4>
+                            <p id="spcbStatus">Status: Awaiting Verification</p>
+                        </div>
+                    </div>
+
+                    <div id="anomaliesBox" class="output-box" style="margin-top: 1rem;">
+                        <p class="placeholder">Anomalies and statutory red flags will be highlighted here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Analytics Chart -->
+            <div id="analyticsTab" class="tab-content">
+                <div class="card">
+                    <h2>Geological Strata Profile & Mineral Reserve Breakdown</h2>
+                    <canvas id="strataChart" style="max-height: 350px;"></canvas>
+                </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <p>Smart India Hackathon 2026 | Developed by Team NexGen for PS 26023</p>
-    </footer>
-
     <script src="script.js"></script>
-    <script>lucide.createIcons();</script>
 </body>
 </html>
