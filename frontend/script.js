@@ -1,6 +1,6 @@
 let currentLoadedData = "";
 let strataChartInstance = null;
-const BACKEND_URL = "https://geomine-api.onrender.com"; // Render Backend URL
+const BACKEND_URL = "https://geomine-sih.onrender.com"; // Render Backend URL
 
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
