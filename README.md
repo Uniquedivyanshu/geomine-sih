@@ -1,0 +1,2 @@
+# geomine-sih
+SIH 2026 MINING DASHBOARD
