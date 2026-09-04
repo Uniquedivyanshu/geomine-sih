@@ -1,14 +1,11 @@
-body {
-    background-color: #0b1a13;
-}
 :root {
-    --bg-dark: #0f172a;
-    --card-bg: #1e293b;
-    --accent-blue: #00f0ff;
-    --accent-orange: #ff6b00;
+    --bg-dark: #06110c;         /* Deep Mining Dark Background */
+    --card-bg: #0d1f17;         /* Card Background */
+    --accent-blue: #10b981;     /* Primary Emerald Green */
+    --accent-orange: #f59e0b;   /* Safety Gold/Amber */
     --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
+    --text-muted: #6b8a7a;
+    --border-color: #1a3d2e;     /* Border Green */
 }
 
 body {
@@ -23,7 +20,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #0b1120;
+    background-color: #081710;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -35,7 +32,7 @@ body {
 
 .logo-icon {
     font-size: 2rem;
-    background: #1e293b;
+    background: #0d1f17;
     padding: 0.5rem;
     border-radius: 8px;
 }
@@ -53,7 +50,7 @@ body {
 }
 
 .status-badge {
-    background-color: rgba(0, 240, 255, 0.1);
+    background-color: rgba(16, 185, 129, 0.1);
     color: var(--accent-blue);
     padding: 0.4rem 0.8rem;
     border-radius: 20px;
@@ -74,7 +71,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
 }
 
 .subtitle {
@@ -90,12 +87,12 @@ body {
     padding: 1.5rem;
     text-align: center;
     cursor: pointer;
-    background: rgba(0, 240, 255, 0.03);
+    background: rgba(16, 185, 129, 0.03);
     transition: 0.2s;
 }
 
 .drop-zone:hover {
-    background: rgba(0, 240, 255, 0.08);
+    background: rgba(16, 185, 129, 0.08);
 }
 
 .upload-icon {
@@ -122,7 +119,7 @@ body {
 }
 
 .btn-sample {
-    background: #0f172a;
+    background: #081710;
     color: var(--text-main);
     border: 1px solid var(--border-color);
     padding: 0.6rem;
@@ -143,7 +140,7 @@ input[type="password"] {
     padding: 0.6rem;
     margin-top: 0.4rem;
     margin-bottom: 1rem;
-    background: #0f172a;
+    background: #081710;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     color: white;
@@ -152,8 +149,8 @@ input[type="password"] {
 
 .btn-primary {
     width: 100%;
-    background: linear-gradient(135deg, var(--accent-orange), #d97706);
-    color: white;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: black;
     border: none;
     padding: 0.8rem;
     border-radius: 8px;
@@ -201,7 +198,7 @@ input[type="password"] {
 }
 
 .output-box {
-    background-color: #0f172a;
+    background-color: #081710;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 1rem;
@@ -221,17 +218,17 @@ input[type="password"] {
     flex-wrap: wrap;
     gap: 0.8rem;
     padding: 1rem;
-    background: #0f172a;
+    background: #081710;
     border-radius: 8px;
     border: 1px solid var(--border-color);
 }
 
 .tag {
-    background: rgba(0, 240, 255, 0.1);
+    background: rgba(16, 185, 129, 0.1);
     color: var(--accent-blue);
     padding: 0.4rem 0.8rem;
     border-radius: 20px;
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .tag-lg { font-size: 1.2rem; font-weight: bold; color: var(--accent-orange); border-color: var(--accent-orange); }
@@ -249,9 +246,9 @@ input[type="password"] {
     padding: 1rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    background: #0f172a;
+    background: #081710;
 }
 
 .status-card h4 { margin: 0 0 0.5rem 0; }
-.status-card.pass { border-left: 5px solid #22c55e; }
+.status-card.pass { border-left: 5px solid #10b981; }
 .status-card.warning { border-left: 5px solid #f59e0b; }
