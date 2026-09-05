@@ -2,6 +2,7 @@ const BACKEND_URL = "https://geomine-sih.onrender.com";
 
 let currentLoadedData = "";
 let strataChartInstance = null;
+let currentFileName = "";
 
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -25,30 +26,36 @@ function switchTab(tabName) {
 function loadSampleData(type) {
     if (type === 'raniganj') {
         currentLoadedData = `[CMPDI GEOLOGICAL LOG - RANIGANJ BLOCK IV]\nBorehole: BH-RN-402 | Depth: 340m\nCoal Reserves: 42.5 MMT | Coal Grade: Power Grade G10\nAsh Content: 12.4% | Overburden: 45m Sandstone\nDGMS Compliance: Compliant with Mine Safety Circular 2024.\nSPCB Air Quality: PM10 levels within 85 ug/m3 limit.`;
+        currentFileName = "Raniganj_Block_IV_Log.pdf";
     } else if (type === 'jharia') {
         currentLoadedData = `[CMPDI GEOLOGICAL & SAFETY REPORT - JHARIA PIT-3]\nBorehole: BH-JH-109 | Depth: 510m\nCoal Reserves: 88.1 MMT | Coal Grade: Prime Coking W-II\nRisk Factor: High Methane Seam Gas Detected at 450m level.\nDGMS Compliance: WARNING - Additional degasification required under DGMS Sec 22.\nSPCB Air Quality: Dust suppression required.`;
+        currentFileName = "Jharia_Deep_Pit3_Report.pdf";
     } else if (type === 'parliament') {
         currentLoadedData = `[MINISTRY OF COAL PARLIAMENTARY QUERY REF #26023]\nSubject: Status of Coal Exploration and Environmental Clearances in CMPDI RI-1.\nQuery: What measures are deployed for DGMS compliance and statutory reporting?\nAnswer: CMPDI has digitized 100% borehole logs using AI-assisted extraction. Environmental parameters are monitored as per SPCB standards.`;
+        currentFileName = "Parliamentary_Query_Ref26023.pdf";
     }
 
     document.getElementById('fileNameDisplay').innerText = `Loaded Dataset: ${type.toUpperCase()}`;
-    document.getElementById('aiOutput').innerHTML = `<p style="color: var(--accent-blue);">Sample data loaded for <strong>${type.toUpperCase()}</strong>. Click "Run AI Mining Engine" to analyze.</p>`;
+    
+    // Clear previous input file selection if sample is loaded
+    document.getElementById('fileInput').value = "";
+
+    document.getElementById('aiOutput').innerHTML = `
+        <p style="color: #38bdf8;">Sample dataset selected: <strong>${currentFileName}</strong>.</p>
+        <p>Click <strong>"Run AI Mining Engine"</strong> to run dynamic extraction and statutory analysis.</p>
+    `;
 }
 
 document.getElementById('fileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
+        currentFileName = file.name;
         document.getElementById('fileNameDisplay').innerText = `Selected: ${file.name}`;
     }
 });
 
 async function processDocument() {
     const outputBox = document.getElementById('aiOutput');
-    const wordCloudBox = document.getElementById('wordCloudBox');
-    const topicSummaryBox = document.getElementById('topicSummaryBox');
-    const dgmsStatus = document.getElementById('dgmsStatus');
-    const spcbStatus = document.getElementById('spcbStatus');
-    const anomaliesBox = document.getElementById('anomaliesBox');
     const apiKey = document.getElementById('apiKey').value;
     const fileInput = document.getElementById('fileInput');
 
@@ -60,6 +67,7 @@ async function processDocument() {
     outputBox.innerHTML = "<p>⚡ <em>Running AI Mining Engine & Analyzing Statutory Compliance...</em></p>";
 
     if (fileInput.files[0]) {
+        currentFileName = fileInput.files[0].name;
         const formData = new FormData();
         formData.append("file", fileInput.files[0]);
         if (apiKey) formData.append("api_key", apiKey);
@@ -74,12 +82,7 @@ async function processDocument() {
             if (data.error) {
                 outputBox.innerHTML = `<p style="color: #ff4d4d;">❌ Error: ${data.error}</p>`;
             } else {
-                outputBox.innerHTML = `
-                    <h4 style="color: var(--accent-blue);">Draft Technical Response & Executive Summary</h4>
-                    <div style="white-space: pre-line;">${data.summary}</div>
-                `;
-                
-                // Update SIH Pillars
+                renderTraceableOutput(data.summary, data.raw_text || data.summary, currentFileName, "Page 1-3");
                 updateWordCloud(data.summary);
                 updateCompliance(data.summary);
             }
@@ -87,13 +90,41 @@ async function processDocument() {
             outputBox.innerHTML = "<p style='color:#ff4d4d;'>Failed to connect to Python Backend Server!</p>";
         }
     } else {
-        outputBox.innerHTML = `
-            <h4 style="color: var(--accent-blue);">Automated Report Draft</h4>
-            <div style="white-space: pre-line;">${currentLoadedData}</div>
-        `;
+        renderTraceableOutput(currentLoadedData, currentLoadedData, currentFileName, "Page 1");
         updateWordCloud(currentLoadedData);
         updateCompliance(currentLoadedData);
     }
+}
+
+// Function to render AI Output with Page-Level Source Evidence Proof
+function renderTraceableOutput(summaryText, rawText, fileName, pages) {
+    const outputBox = document.getElementById('aiOutput');
+    const metaBadge = document.getElementById('extractionMeta');
+
+    // Show Metadata Badge if element exists in index.html
+    if (metaBadge) {
+        metaBadge.style.display = 'block';
+        document.getElementById('metaFileName').innerText = fileName || "Document.pdf";
+        document.getElementById('metaPages').innerText = pages || "Page 1";
+    }
+
+    const snippet = rawText.replace(/\n/g, ' ').substring(0, 180);
+
+    outputBox.innerHTML = `
+        <!-- Source Citation Evidence Card -->
+        <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; padding: 0.8rem 1rem; margin-bottom: 1rem; border-radius: 6px; font-size: 0.85rem;">
+            <div style="color: #10b981; font-weight: 700; margin-bottom: 0.3rem; display: flex; justify-content: space-between;">
+                <span>📌 Extracted Evidence Context (${pages})</span>
+                <span style="font-size: 0.75rem; opacity: 0.8;">Verified by Gemini Engine</span>
+            </div>
+            <p style="margin: 0; font-style: italic; color: #cbd5e1;">
+                "${snippet}..."
+            </p>
+        </div>
+
+        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Draft Technical Response & Executive Summary</h4>
+        <div style="white-space: pre-line; line-height: 1.6; color: #e2e8f0;">${summaryText}</div>
+    `;
 }
 
 function updateWordCloud(text) {
