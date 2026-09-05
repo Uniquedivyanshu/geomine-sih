@@ -61,16 +61,24 @@
                 <button class="tab-btn" onclick="switchTab('analytics')">📊 Stratigraphy & Metrics</button>
             </div>
 
-            <!-- Tab 1: Automated Report & Parliamentary QA -->
-            <div id="reportTab" class="tab-content active">
-                <div class="card">
-                    <h2>Automated Technical & Parliamentary QA Response</h2>
-                    <p class="section-desc">AI-generated official technical summaries and automated responses formatted for Ministry & Administrative queries.</p>
-                    <div id="aiOutput" class="output-box">
-                        <p class="placeholder">Select or upload a PDF document and click "Run AI Mining Engine" to generate reports.</p>
-                    </div>
-                </div>
-            </div>
+           <!-- Tab 1: Automated Report & Parliamentary QA -->
+<div id="reportTab" class="tab-content active">
+    <div class="card">
+        <h2>Automated Technical & Parliamentary QA Response</h2>
+        <p class="section-desc">AI-generated official technical summaries with page-level source attribution.</p>
+        
+        <!-- Live Extraction Metadata Badge -->
+        <div id="extractionMeta" style="display:none; background: #061e14; border: 1px solid #10b981; padding: 0.6rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.82rem; color: #a7f3d0;">
+            <span>📄 <strong>Source Document:</strong> <span id="metaFileName">SMART INDIA HACKATHON 2026.pdf</span></span> | 
+            <span>📑 <strong>Extracted Pages:</strong> <span id="metaPages">Page 1-3</span></span> | 
+            <span>⚡ <strong>Engine:</strong> Gemini 1.5 Dynamic Parser</span>
+        </div>
+
+        <div id="aiOutput" class="output-box">
+            <p class="placeholder">Select or upload a document and click "Run AI Mining Engine" to trace dynamic extraction.</p>
+        </div>
+    </div>
+   </div>
 
             <!-- Tab 2: Word Cloud & Topic Extraction -->
             <div id="topicsTab" class="tab-content">
