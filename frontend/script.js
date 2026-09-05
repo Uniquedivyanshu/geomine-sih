@@ -96,7 +96,7 @@ async function processDocument() {
     }
 }
 
-// Function to render AI Output with Page-Level Source Evidence Proof
+// Function to render AI Output with Source Citation Evidence Proof + 8-Point Ministry Template
 function renderTraceableOutput(summaryText, rawText, fileName, pages) {
     const outputBox = document.getElementById('aiOutput');
     const metaBadge = document.getElementById('extractionMeta');
@@ -108,7 +108,10 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
         document.getElementById('metaPages').innerText = pages || "Page 1";
     }
 
-    const snippet = rawText.replace(/\n/g, ' ').substring(0, 180);
+    const snippet = rawText ? rawText.replace(/\n/g, ' ').substring(0, 180) : "";
+
+    // Generate 8-Point Structural Report
+    const structuredHTML = generateStructuredReport(summaryText, fileName);
 
     outputBox.innerHTML = `
         <!-- Source Citation Evidence Card -->
@@ -122,9 +125,14 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
             </p>
         </div>
 
-        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Draft Technical Response & Executive Summary</h4>
-        <div style="white-space: pre-line; line-height: 1.6; color: #e2e8f0;">${summaryText}</div>
+        ${structuredHTML}
     `;
+
+    // Make Download Action Buttons Visible
+    const exportBtns = document.getElementById('exportActionContainer');
+    if (exportBtns) {
+        exportBtns.style.display = 'flex';
+    }
 }
 
 function updateWordCloud(text) {
@@ -167,6 +175,7 @@ function renderChart() {
         }
     });
 }
+
 // Function to generate standard 8-point Ministry Report structure
 function generateStructuredReport(dataText, fileName) {
     const isJharia = fileName.toLowerCase().includes('jharia') || dataText.includes('Jharia');
@@ -208,8 +217,6 @@ function exportReport(format) {
         alert("Please run the AI Mining Engine first!");
         return;
     }
-
-    const reportContent = reportElement.innerText;
 
     if (format === 'docx') {
         const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Mining Technical Report</title></head><body>";
