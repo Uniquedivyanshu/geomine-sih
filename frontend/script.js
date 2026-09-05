@@ -181,7 +181,7 @@ async function askAIQuestion() {
     // Render Traceable Q&A Result Block
     outputBox.innerHTML = `
         <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid #38bdf8; border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display:flex; justify-size: space-between; align-items:center; border-bottom: 1px solid rgba(56,189,248,0.2); padding-bottom: 0.5rem; margin-bottom: 0.8rem;">
+            <div style="display:flex; justify-content: space-between; align-items:center; border-bottom: 1px solid rgba(56,189,248,0.2); padding-bottom: 0.5rem; margin-bottom: 0.8rem;">
                 <span style="color:#38bdf8; font-weight:700;">🤖 AI Grounded Answer</span>
                 <span style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:700;">Grounded Confidence: ${confidence}</span>
             </div>
@@ -391,6 +391,9 @@ function renderAccuracyMetrics() {
     `;
 }
 
+// ==========================================
+// POINT 11: HUMAN-IN-THE-LOOP APPROVAL WORKFLOW REPORT GENERATOR
+// ==========================================
 function generateStructuredReport(dataText, fileName) {
     const isJharia = fileName.toLowerCase().includes('jharia') || dataText.includes('Jharia');
     const isRaniganj = fileName.toLowerCase().includes('raniganj') || dataText.includes('Raniganj');
@@ -399,8 +402,20 @@ function generateStructuredReport(dataText, fileName) {
 
     return `
 <div class="official-report-template" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); padding: 1.5rem; border-radius: 8px;">
+    
+    <!-- HUMAN-IN-THE-LOOP APPROVAL BANNER -->
+    <div id="approvalBanner" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; padding: 0.8rem 1rem; border-radius: 6px; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span style="color: #f59e0b; font-weight: 700; font-size: 0.85rem;">⏳ Human-in-the-Loop Workflow: PENDING OFFICER REVIEW</span>
+            <p style="margin: 0.2rem 0 0 0; color: #cbd5e1; font-size: 0.78rem;">AI Draft Generated. Requires Nodal Officer verification before final Ministry dispatch.</p>
+        </div>
+        <button id="approveBtn" onclick="approveReportByOfficer()" style="background: #10b981; color: #022c22; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.8rem;">
+            ✅ Verify & Approve Report
+        </button>
+    </div>
+
     <div style="border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-        <h2 style="color: #38bdf8; margin: 0; font-size: 1.3rem;">MINING TECHNICAL & STATUTORY REPORT</h2>
+        <h2 style="color: #38bdf8; margin: 0; font-size: 1.3rem;">MINING TECHNICAL & STATUTORY REPORT (DRAFT)</h2>
         <p style="margin: 0.2rem 0 0 0; color: #94a3b8; font-size: 0.9rem;"><strong>Target Mine Site:</strong> ${mineName} | <strong>Authority:</strong> CMPDI / Ministry of Coal</p>
     </div>
 
@@ -424,6 +439,23 @@ function generateStructuredReport(dataText, fileName) {
 </div>`;
 }
 
+// OFFICER APPROVAL HANDLER
+function approveReportByOfficer() {
+    const banner = document.getElementById('approvalBanner');
+    if (banner) {
+        banner.style.background = "rgba(16, 185, 129, 0.15)";
+        banner.style.borderColor = "#10b981";
+        banner.innerHTML = `
+            <div>
+                <span style="color: #10b981; font-weight: 700; font-size: 0.85rem;">✅ VERIFIED & APPROVED BY NODAL OFFICER</span>
+                <p style="margin: 0.2rem 0 0 0; color: #cbd5e1; font-size: 0.78rem;">Digital Signature Attached | Dynamic Report Ready for Export & Ministry Submission.</p>
+            </div>
+            <span style="background: #10b981; color: #022c22; padding: 0.3rem 0.8rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem;">Status: Approved</span>
+        `;
+    }
+}
+
+// REPORT EXPORT HANDLER
 function exportReport(format) {
     const reportElement = document.querySelector('.official-report-template');
     if (!reportElement) {
