@@ -23,27 +23,65 @@ function switchTab(tabName) {
     }
 }
 
+// ==========================================
+// POINT 7: HISTORICAL COMPARISON & AI DECISION SUPPORT SYSTEM
+// ==========================================
 function loadSampleData(type) {
+    let comparisonInsightHTML = "";
+
     if (type === 'raniganj') {
         currentLoadedData = `[CMPDI GEOLOGICAL LOG - RANIGANJ BLOCK IV]\nBorehole: BH-RN-402 | Depth: 340m\nCoal Reserves: 42.5 MMT | Coal Grade: Power Grade G10\nAsh Content: 12.4% | Overburden: 45m Sandstone\nDGMS Compliance: Compliant with Mine Safety Circular 2024.\nSPCB Air Quality: PM10 levels within 85 ug/m3 limit.`;
         currentFileName = "Raniganj_Block_IV_Log.pdf";
+
+        comparisonInsightHTML = `
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 6px; padding: 0.8rem; margin-top: 0.8rem; font-size: 0.82rem;">
+                <strong style="color: #10b981;">📈 AI Historical Trend Analysis (Raniganj Block 2023 vs 2025):</strong>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #cbd5e1;">
+                    <span>⚡ Reserve Capacity: <strong style="color:#22c55e;">+6.2% MMT</strong></span>
+                    <span>🌿 Dust PM10 Emission: <strong style="color:#22c55e;">↓ 14%</strong></span>
+                    <span>🛡️ Compliance Violations: <strong style="color:#22c55e;">0 Flagged</strong></span>
+                </div>
+            </div>
+        `;
     } else if (type === 'jharia') {
         currentLoadedData = `[CMPDI GEOLOGICAL & SAFETY REPORT - JHARIA PIT-3]\nBorehole: BH-JH-109 | Depth: 510m\nCoal Reserves: 88.1 MMT | Coal Grade: Prime Coking W-II\nRisk Factor: High Methane Seam Gas Detected at 450m level.\nDGMS Compliance: WARNING - Additional degasification required under DGMS Sec 22.\nSPCB Air Quality: Dust suppression required.`;
         currentFileName = "Jharia_Deep_Pit3_Report.pdf";
+
+        comparisonInsightHTML = `
+            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; border-radius: 6px; padding: 0.8rem; margin-top: 0.8rem; font-size: 0.82rem;">
+                <strong style="color: #f59e0b;">🚨 AI Multi-Year Risk Insight (Jharia Pit-3 2024 vs 2025):</strong>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #cbd5e1;">
+                    <span>🔥 Methane Gas Seam Incidents: <strong style="color:#ef4444;">↑ 18% (Action Req.)</strong></span>
+                    <span>⛏️ Coal Extraction Output: <strong style="color:#22c55e;">↑ 8.4%</strong></span>
+                    <span>⚠️ Safety Compliance Risk: <strong style="color:#f59e0b;">Degasification Mandated</strong></span>
+                </div>
+            </div>
+        `;
     } else if (type === 'parliament') {
         currentLoadedData = `[MINISTRY OF COAL PARLIAMENTARY QUERY REF #26023]\nSubject: Status of Coal Exploration and Environmental Clearances in CMPDI RI-1.\nQuery: What measures are deployed for DGMS compliance and statutory reporting?\nAnswer: CMPDI has digitized 100% borehole logs using AI-assisted extraction. Environmental parameters are monitored as per SPCB standards.`;
         currentFileName = "Parliamentary_Query_Ref26023.pdf";
+
+        comparisonInsightHTML = `
+            <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; border-radius: 6px; padding: 0.8rem; margin-top: 0.8rem; font-size: 0.82rem;">
+                <strong style="color: #38bdf8;">🏛️ Parliamentary Compliance Audit Summary:</strong>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #cbd5e1;">
+                    <span>📂 Borehole Digitization: <strong style="color:#22c55e;">100% Complete</strong></span>
+                    <span>⏱️ Ministry Reporting Speed: <strong style="color:#22c55e;">3x Faster (AI Dynamic)</strong></span>
+                </div>
+            </div>
+        `;
     }
 
     document.getElementById('fileNameDisplay').innerText = `Loaded Dataset: ${type.toUpperCase()}`;
-    
-    // Clear previous input file selection if sample is loaded
     document.getElementById('fileInput').value = "";
 
     document.getElementById('aiOutput').innerHTML = `
-        <p style="color: #38bdf8;">Sample dataset selected: <strong>${currentFileName}</strong>.</p>
-        <p>Click <strong>"Run AI Mining Engine"</strong> to run dynamic extraction and statutory analysis.</p>
+        <p style="color: #38bdf8; margin-bottom: 0.3rem;">Selected Dataset: <strong>${currentFileName}</strong>.</p>
+        ${comparisonInsightHTML}
+        <p style="margin-top: 0.8rem;">Click <strong>"Run AI Mining Engine"</strong> to run dynamic extraction and statutory analysis.</p>
     `;
+
+    renderChart();
 }
 
 document.getElementById('fileInput').addEventListener('change', (e) => {
@@ -101,7 +139,6 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
     const outputBox = document.getElementById('aiOutput');
     const metaBadge = document.getElementById('extractionMeta');
 
-    // Show Metadata Badge if element exists in index.html
     if (metaBadge) {
         metaBadge.style.display = 'block';
         document.getElementById('metaFileName').innerText = fileName || "Document.pdf";
@@ -109,12 +146,9 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
     }
 
     const snippet = rawText ? rawText.replace(/\n/g, ' ').substring(0, 180) : "";
-
-    // Generate 8-Point Structural Report
     const structuredHTML = generateStructuredReport(summaryText, fileName);
 
     outputBox.innerHTML = `
-        <!-- Source Citation Evidence Card -->
         <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; padding: 0.8rem 1rem; margin-bottom: 1rem; border-radius: 6px; font-size: 0.85rem;">
             <div style="color: #10b981; font-weight: 700; margin-bottom: 0.3rem; display: flex; justify-content: space-between;">
                 <span>📌 Extracted Evidence Context (${pages})</span>
@@ -128,7 +162,6 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
         ${structuredHTML}
     `;
 
-    // Make Download Action Buttons Visible
     const exportBtns = document.getElementById('exportActionContainer');
     if (exportBtns) {
         exportBtns.style.display = 'flex';
@@ -136,7 +169,6 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
 }
 
 function updateWordCloud(text) {
-    // 1. Core Mining Keywords with dynamic importance weights (Font Size multiplier)
     const topicKeywords = [
         { word: "Coal Seam", weight: 28, color: "#38bdf8" },
         { word: "Methane Risk", weight: text.includes("Methane") || text.includes("WARNING") ? 32 : 18, color: "#f59e0b" },
@@ -150,7 +182,6 @@ function updateWordCloud(text) {
         { word: "Coking Coal", weight: 19, color: "#e2e8f0" }
     ];
 
-    // 2. Generate Tag Cloud with dynamic Font-Sizes & Visual Layout
     const cloudHtml = topicKeywords.map(item => {
         return `<span style="
             font-size: ${item.weight}px; 
@@ -167,7 +198,6 @@ function updateWordCloud(text) {
         </span>`;
     }).join(" ");
 
-    // 3. Render into Word Cloud Container
     const wordCloudContainer = document.getElementById('wordCloudBox');
     if (wordCloudContainer) {
         wordCloudContainer.style.textAlign = "center";
@@ -178,7 +208,6 @@ function updateWordCloud(text) {
         wordCloudContainer.innerHTML = cloudHtml;
     }
 
-    // 4. Update Topics Summary Text
     const topicSummaryBox = document.getElementById('topicSummaryBox');
     if (topicSummaryBox) {
         topicSummaryBox.innerHTML = `
@@ -193,16 +222,13 @@ function updateCompliance(text) {
     const isMethaneRisk = text.includes("Methane") || text.includes("WARNING");
     const isJharia = currentFileName.toLowerCase().includes('jharia') || text.includes('Jharia');
     
-    // Extracted Values based on dynamic analysis
     const methaneVal = isMethaneRisk ? "1.45%" : "0.32%";
     const pm10Val = isJharia ? "112 µg/m³" : "85 µg/m³";
     const coVal = isMethaneRisk ? "28 ppm" : "12 ppm";
     
-    // Status Badges
     const methaneStatus = isMethaneRisk ? "<span style='color:#ef4444; font-weight:700;'>⚠️ EXCEEDED</span>" : "<span style='color:#22c55e; font-weight:700;'>✅ SAFE</span>";
     const pm10Status = isJharia ? "<span style='color:#f59e0b; font-weight:700;'>⚠️ HIGH</span>" : "<span style='color:#22c55e; font-weight:700;'>✅ PERMISSIBLE</span>";
 
-    // 1. Audit Table HTML
     const auditTableHTML = `
     <div style="margin-top: 1rem; overflow-x: auto;">
         <table style="width:100%; border-collapse: collapse; font-size: 0.82rem; text-align: left; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px;">
@@ -245,7 +271,6 @@ function updateCompliance(text) {
         </table>
     </div>`;
 
-    // 2. Update Status Cards & Anomaly Box
     const dgmsStatusEl = document.getElementById('dgmsStatus');
     const spcbStatusEl = document.getElementById('spcbStatus');
     const anomaliesBoxEl = document.getElementById('anomaliesBox');
@@ -271,29 +296,76 @@ function updateCompliance(text) {
     }
 }
 
+// ==========================================
+// POINT 6: INTERACTIVE STRATIGRAPHIC COLUMN & GEOLOGICAL CHART
+// ==========================================
 function renderChart() {
-    const ctx = document.getElementById('strataChart').getContext('2d');
+    const chartCanvas = document.getElementById('strataChart');
+    if (!chartCanvas) return;
+    const ctx = chartCanvas.getContext('2d');
+
     if (strataChartInstance) strataChartInstance.destroy();
+
+    const isJharia = currentFileName.toLowerCase().includes('jharia') || currentLoadedData.includes('Jharia');
+    
+    const strataLabels = ['Surface Soil', '45m Sandstone', 'Shale Layer', '12m Coal Seam A', 'Lower Basal Roof', '18m Prime Coal Seam B'];
+    const depths = [0, 45, 165, 200, 280, 340];
+    const layerThickness = [15, 30, 120, 35, 80, 60];
 
     strataChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Overburden', 'Sandstone Layer', 'Coal Seam A', 'Shale Layer', 'Coal Seam B'],
+            labels: strataLabels,
             datasets: [{
-                label: 'Layer Depth / Thickness (Meters)',
-                data: [45, 120, 35, 80, 60],
-                backgroundColor: ['#334155', '#94a3b8', '#ff6b00', '#475569', '#00f0ff']
+                label: 'Layer Thickness (Meters)',
+                data: layerThickness,
+                backgroundColor: [
+                    '#a16207',
+                    '#94a3b8',
+                    '#475569',
+                    '#38bdf8',
+                    '#334155',
+                    isJharia ? '#ef4444' : '#00f0ff'
+                ],
+                borderColor: '#1e293b',
+                borderWidth: 2
             }]
         },
         options: {
+            indexAxis: 'y',
             responsive: true,
-            plugins: { title: { display: true, text: 'Geological Strata Profile Breakdown', color: '#fff' } },
-            scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Borehole Lithology & Stratigraphic Profile (${currentFileName || 'BH-RN-402'})`,
+                    color: '#38bdf8',
+                    font: { size: 14, weight: 'bold' }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const index = context.dataIndex;
+                            return `Thickness: ${layerThickness[index]}m | Interval Depth: ${depths[index]}m - ${depths[index] + layerThickness[index]}m`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Layer Depth / Thickness Interval (Meters)', color: '#cbd5e1' },
+                    ticks: { color: '#94a3b8' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y: {
+                    ticks: { color: '#e2e8f0' },
+                    grid: { display: false }
+                }
+            }
         }
     });
 }
 
-// Function to generate standard 8-point Ministry Report structure
 function generateStructuredReport(dataText, fileName) {
     const isJharia = fileName.toLowerCase().includes('jharia') || dataText.includes('Jharia');
     const isRaniganj = fileName.toLowerCase().includes('raniganj') || dataText.includes('Raniganj');
@@ -327,7 +399,6 @@ function generateStructuredReport(dataText, fileName) {
 </div>`;
 }
 
-// Function to handle DOCX & PDF Download
 function exportReport(format) {
     const reportElement = document.querySelector('.official-report-template');
     if (!reportElement) {
