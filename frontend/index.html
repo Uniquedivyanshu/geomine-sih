@@ -27,10 +27,10 @@
                 <p class="subtitle">Supports Digital/Scanned PDFs (OCR), Borehole logs (CSV/XLSX) & Compliance reports</p>
                 
                 <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-    <span class="upload-icon">☁️</span>
-    <p>Click or Drag <strong>PDF, Scanned Docs (OCR), XLSX/CSV, DOCX, or Images</strong> here</p>
-    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.docx,.csv,.xlsx" style="display:none;">
-          </div>
+                    <span class="upload-icon">☁️</span>
+                    <p>Click or Drag <strong>PDF, Scanned Docs (OCR), XLSX/CSV, DOCX, or Images</strong> here</p>
+                    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.docx,.csv,.xlsx" style="display:none;">
+                </div>
                 <div id="fileNameDisplay" class="file-name">No file selected</div>
 
                 <hr class="divider">
@@ -61,33 +61,40 @@
                 <button class="tab-btn" onclick="switchTab('analytics')">📊 Stratigraphy & Metrics</button>
             </div>
 
-           <!-- Tab 1: Automated Report & Parliamentary QA -->
-<div id="reportTab" class="tab-content active">
-    <div class="card">
-        <h2>Automated Technical & Parliamentary QA Response</h2>
-        <p class="section-desc">AI-generated official technical summaries with page-level source attribution.</p>
-        
-        <!-- Live Extraction Metadata Badge -->
-        <div id="extractionMeta" style="display:none; background: #061e14; border: 1px solid #10b981; padding: 0.6rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.82rem; color: #a7f3d0;">
-            <span>📄 <strong>Source Document:</strong> <span id="metaFileName">SMART INDIA HACKATHON 2026.pdf</span></span> | 
-            <span>📑 <strong>Extracted Pages:</strong> <span id="metaPages">Page 1-3</span></span> | 
-            <span>⚡ <strong>Engine:</strong> Gemini 1.5 Dynamic Parser</span>
-        </div>
+            <!-- Tab 1: Automated Report & Parliamentary QA -->
+            <div id="reportTab" class="tab-content active">
+                <div class="card">
+                    <h2>Automated Technical & Parliamentary QA Response</h2>
+                    <p class="section-desc">AI-generated official technical summaries with page-level source attribution.</p>
+                    
+                    <!-- Live Extraction Metadata Badge -->
+                    <div id="extractionMeta" style="display:none; background: #061e14; border: 1px solid #10b981; padding: 0.6rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.82rem; color: #a7f3d0;">
+                        <span>📄 <strong>Source Document:</strong> <span id="metaFileName">SMART INDIA HACKATHON 2026.pdf</span></span> | 
+                        <span>📑 <strong>Extracted Pages:</strong> <span id="metaPages">Page 1-3</span></span> | 
+                        <span>⚡ <strong>Engine:</strong> Gemini 1.5 Dynamic Parser</span>
+                    </div>
 
-        <div id="aiOutput" class="output-box">
-            <p class="placeholder">Select or upload a document and click "Run AI Mining Engine" to trace dynamic extraction.</p>
-        </div>
-        <!-- Export Action Buttons -->
-                <div id="exportActionContainer" style="display: none; margin-top: 1.2rem; gap: 0.75rem; justify-content: flex-end;">
-                    <button class="btn-sample" onclick="exportReport('docx')" style="width: auto; background: #1e293b; color: #38bdf8; border-color: #38bdf8; font-weight: 600; cursor: pointer;">
-                        📄 Download Official Report (.DOCX)
-                    </button>
-                    <button class="btn-primary" onclick="exportReport('pdf')" style="width: auto; padding: 0.5rem 1rem; cursor: pointer;">
-                        📥 Export Ministry Draft (.PDF)
-                    </button>
+                    <div id="aiOutput" class="output-box">
+                        <p class="placeholder">Select or upload a document and click "Run AI Mining Engine" to trace dynamic extraction.</p>
+                    </div>
+
+                    <!-- 🔴 INTEGRATED: AI Q&A Interactive Input Box -->
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <input type="text" id="userQueryInput" placeholder="Ask AI e.g., 'What was the methane concentration in Jharia Pit-3?'" style="flex: 1; padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(15, 23, 42, 0.8); color: white;">
+                        <button onclick="askAIQuestion()" style="background: #38bdf8; color: #0f172a; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Ask AI</button>
+                    </div>
+
+                    <!-- Export Action Buttons -->
+                    <div id="exportActionContainer" style="display: none; margin-top: 1.2rem; gap: 0.75rem; justify-content: flex-end;">
+                        <button class="btn-sample" onclick="exportReport('docx')" style="width: auto; background: #1e293b; color: #38bdf8; border-color: #38bdf8; font-weight: 600; cursor: pointer;">
+                            📄 Download Official Report (.DOCX)
+                        </button>
+                        <button class="btn-primary" onclick="exportReport('pdf')" style="width: auto; padding: 0.5rem 1rem; cursor: pointer;">
+                            📥 Export Ministry Draft (.PDF)
+                        </button>
+                    </div>
                 </div>
-    </div>
-   </div>
+            </div>
 
             <!-- Tab 2: Word Cloud & Topic Extraction -->
             <div id="topicsTab" class="tab-content">
@@ -131,15 +138,19 @@
                 </div>
             </div>
 
-            <!-- Tab 4: Analytics Chart -->
+            <!-- Tab 4: Analytics Chart & Accuracy Metrics -->
             <div id="analyticsTab" class="tab-content">
                 <div class="card">
                     <h2>Geological Strata Profile & Mineral Reserve Breakdown</h2>
                     <canvas id="strataChart" style="max-height: 350px;"></canvas>
+
+                    <!-- 🔴 INTEGRATED: Accuracy Metrics Dashboard Container -->
+                    <div id="accuracyMetricsBox"></div>
                 </div>
             </div>
         </section>
     </main>
+
     <!-- NexGen Team Footer Credit -->
     <footer style="text-align: center; padding: 1.2rem; color: #888; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 2rem;">
         <p>Developed by Team NexGen | Smart India Hackathon (SIH26023)</p>
