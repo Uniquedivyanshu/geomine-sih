@@ -136,10 +136,57 @@ function renderTraceableOutput(summaryText, rawText, fileName, pages) {
 }
 
 function updateWordCloud(text) {
-    const keywords = ["Coal Seam", "Methane Risk", "DGMS Guidelines", "SPCB Standards", "Sandstone Strata", "Borehole Log", "Reserve Estimation"];
-    const tagsHtml = keywords.map(kw => `<span class="tag tag-md">${kw}</span>`).join(" ");
-    document.getElementById('wordCloudBox').innerHTML = tagsHtml;
-    document.getElementById('topicSummaryBox').innerHTML = `<p><strong>Extracted Topics:</strong> Mining Geology, Environmental Risk Assessment, Mineral Reserve Calculation, Statutory Governance.</p>`;
+    // 1. Core Mining Keywords with dynamic importance weights (Font Size multiplier)
+    const topicKeywords = [
+        { word: "Coal Seam", weight: 28, color: "#38bdf8" },
+        { word: "Methane Risk", weight: text.includes("Methane") || text.includes("WARNING") ? 32 : 18, color: "#f59e0b" },
+        { word: "DGMS Guidelines", weight: 24, color: "#22c55e" },
+        { word: "SPCB Standards", weight: 20, color: "#a855f7" },
+        { word: "Sandstone Strata", weight: 22, color: "#94a3b8" },
+        { word: "Borehole Log", weight: 26, color: "#00f0ff" },
+        { word: "Reserve Estimation", weight: 25, color: "#38bdf8" },
+        { word: "Overburden", weight: 16, color: "#cbd5e1" },
+        { word: "Ventilation", weight: text.includes("Methane") ? 22 : 14, color: "#ef4444" },
+        { word: "Coking Coal", weight: 19, color: "#e2e8f0" }
+    ];
+
+    // 2. Generate Tag Cloud with dynamic Font-Sizes & Visual Layout
+    const cloudHtml = topicKeywords.map(item => {
+        return `<span style="
+            font-size: ${item.weight}px; 
+            color: ${item.color}; 
+            font-weight: 700; 
+            margin: 6px 10px; 
+            display: inline-block; 
+            line-height: 1.2;
+            text-shadow: 0 0 10px ${item.color}33;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        " title="Keyword Frequency Weight: ${item.weight}">
+            ${item.word}
+        </span>`;
+    }).join(" ");
+
+    // 3. Render into Word Cloud Container
+    const wordCloudContainer = document.getElementById('wordCloudBox');
+    if (wordCloudContainer) {
+        wordCloudContainer.style.textAlign = "center";
+        wordCloudContainer.style.padding = "1rem";
+        wordCloudContainer.style.background = "rgba(15, 23, 42, 0.4)";
+        wordCloudContainer.style.borderRadius = "8px";
+        wordCloudContainer.style.border = "1px solid rgba(56, 189, 248, 0.15)";
+        wordCloudContainer.innerHTML = cloudHtml;
+    }
+
+    // 4. Update Topics Summary Text
+    const topicSummaryBox = document.getElementById('topicSummaryBox');
+    if (topicSummaryBox) {
+        topicSummaryBox.innerHTML = `
+            <p style="margin-top: 0.8rem; font-size: 0.9rem; color: #cbd5e1;">
+                📌 <strong>Extracted Core Topics:</strong> Mining Geology & Stratigraphy, Environmental Risk Assessment, Hydro-geological Reserve Calculation, Statutory Governance (DGMS/SPCB).
+            </p>
+        `;
+    }
 }
 
 function updateCompliance(text) {
